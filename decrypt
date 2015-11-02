@@ -1,0 +1,19 @@
+#!/bin/bash
+
+if [ -z $1 ] || [ -z $2 ]; then
+    echo "Usage: $0 [filename] [private_key]"
+    exit 1
+fi
+
+if [ ! -f $1 ]; then
+    echo "File [$1] is not existed"
+    exit 1
+fi
+
+if [ ! -f $2 ]; then
+    echo "Private Key [$2] is not existed"
+    exit 1
+fi
+
+echo "# Decrypting file..."
+openssl smime -decrypt -binary -in $1 -out $1.dec -inform DER -inkey $2 -passin pass:
