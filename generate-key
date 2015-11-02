@@ -1,0 +1,20 @@
+#!/bin/bash
+
+if [ -d secure_key ]; then
+    rm -rf secure_key
+fi
+
+mkdir -p secure_key
+
+CITY=$(< /dev/urandom tr -dc _A-Z-a-z-0-9 | head -c${1:-32};echo)
+PROV=$(< /dev/urandom tr -dc _A-Z-a-z-0-9 | head -c${1:-32};echo)
+ORG=$(< /dev/urandom tr -dc _A-Z-a-z-0-9 | head -c${1:-32};echo)
+DEPT=$(< /dev/urandom tr -dc _A-Z-a-z-0-9 | head -c${1:-32};echo)
+NAME=$(< /dev/urandom tr -dc _A-Z-a-z-0-9 | head -c${1:-32};echo)
+
+SUBJ="/C=CA/ST=$CITY/L=$PROV/O=$ORG/OU=$DEPT/CN=$NAME/emailAddress=$NAME@private"
+
+echo "# Generating public key and private key..."
+openssl req -x509 -nodes -days 1 -newkey rsa:4096 -keyout secure_key/private.pem -out secure_key/public.pem -subj $SUBJ
+
+
