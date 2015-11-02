@@ -1,0 +1,36 @@
+#!/bin/bash
+
+if [ -z "$1" ]; then
+    echo "Usage: $0 [folder]"
+    exit 1
+fi
+
+if [ ! -d "$1" ]; then
+    echo "Folder is not existed"
+    exit 1
+fi
+
+FILES=$(find $1 -type f -name '*')
+DIRS=$(find $1 -type d -name '*')
+
+BUILD_CMD="#!/bin/sh"
+
+for d in $DIRS
+do
+    BUILD_CMD="$BUILD_CMD\nmkdir -p $d"
+done
+
+BUILD_CMD="$BUILD_CMD\n"
+
+for f in $FILES
+do
+    BUILD_SRC=
+    BUILD_CMD="$BUILD_CMD\ncat <<'EOF'> $f\n"
+    while read i;
+    do
+        BUILD_SRC="$BUILD_SRC$i\n"
+    done < <(cat $f)
+    BUILD_CMD="$BUILD_CMD$BUILD_SRC\nEOF\n"
+done
+
+echo -e $BUILD_CMD
