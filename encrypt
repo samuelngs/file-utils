@@ -1,0 +1,20 @@
+#!/bin/bash
+
+if [ -z $1 ] || [ -z $2 ]; then
+    echo "Usage: $0 [filename] [pub_key]"
+    exit 1
+fi
+
+if [ ! -f $1 ]; then
+    echo "File [$1] is not existed"
+    exit 1
+fi
+
+if [ ! -f $2 ]; then
+    echo "Public Key [$2] is not existed"
+    exit 1
+fi
+
+echo "# Encrypting file..."
+openssl smime -encrypt -aes-256-cbc -in $1 -binary -out $1.enc -outform DEM $2
+
